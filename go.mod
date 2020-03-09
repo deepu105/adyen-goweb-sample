@@ -1,8 +1,9 @@
-module github.com/adyen/go-client
+module go-client
 
 go 1.12
 
 require (
+	github.com/dustin/go-broadcast v0.0.0-20171205050544-f664265f5a66 // indirect
 	github.com/gin-gonic/contrib v0.0.0-20191209060500-d6e26eeaa607
 	github.com/gin-gonic/gin v1.5.0
 	github.com/go-playground/universal-translator v0.17.0 // indirect
