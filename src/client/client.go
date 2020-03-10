@@ -51,6 +51,8 @@ func (api *CheckoutAPI) PaymentMethods(req PaymentMethodsReq) (PaymentMethodsRes
 
 	updateHeaders(httpReq, api.config.APIKey)
 
+	fmt.Printf("Request: %s\n", string(reqBody))
+
 	resp, err := api.client.Do(httpReq)
 	if err != nil {
 		return paymentRes, err
@@ -61,6 +63,43 @@ func (api *CheckoutAPI) PaymentMethods(req PaymentMethodsReq) (PaymentMethodsRes
 	if err != nil {
 		return paymentRes, err
 	}
+
+	json.Unmarshal(body, &paymentRes)
+
+	return paymentRes, nil
+}
+
+// Payments will submit a payment to the Adyen API
+func (api *CheckoutAPI) Payments(req PaymentsReq) (PaymentsRes, error) {
+	req.MerchantAccount = api.config.MerchantAccount
+
+	paymentRes := PaymentsRes{}
+	reqBody, err := json.Marshal(req)
+	if err != nil {
+		return paymentRes, err
+	}
+
+	httpReq, err := http.NewRequest("POST", ADYEN_API+"/payments", bytes.NewBuffer(reqBody))
+	if err != nil {
+		return paymentRes, err
+	}
+
+	updateHeaders(httpReq, api.config.APIKey)
+
+	fmt.Printf("Request: %s\n", string(reqBody))
+
+	resp, err := api.client.Do(httpReq)
+	if err != nil {
+		return paymentRes, err
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return paymentRes, err
+	}
+
+	fmt.Printf("Res: %s", string(body))
 
 	json.Unmarshal(body, &paymentRes)
 

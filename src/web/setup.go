@@ -43,7 +43,8 @@ func Init() {
 		})
 	}
 
-	api.GET("/paymentMethods", PaymentMethodsHandler)
+	api.POST("/paymentMethods", PaymentMethodsHandler)
+	api.POST("/payments", PaymentsHandler)
 
 	// Start and run the server
 	router.Run(":3000")

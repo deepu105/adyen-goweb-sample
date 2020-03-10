@@ -20,8 +20,8 @@ type PaymentMethodsReq struct {
 	AllowedPaymentMethods []string    `json:"allowedPaymentMethods,omitempty"`
 	BlockedPaymentMethods []string    `json:"blockedPaymentMethods,omitempty"`
 	Amount                struct {
-		Currency string `json:"currency,omitempty"`
-		Value    int64  `json:"value,omitempty"`
+		Currency string  `json:"currency,omitempty"`
+		Value    float64 `json:"value,omitempty"`
 	} `json:"amount,omitempty"`
 	Channel                   string `json:"channel,omitempty"`
 	CountryCode               string `json:"countryCode,omitempty"`
@@ -36,4 +36,26 @@ type PaymentMethodsRes struct {
 	OneClickPaymentMethods []interface{} `json:"oneClickPaymentMethods,omitempty"`
 	PaymentMethods         []interface{} `json:"paymentMethods,omitempty"`
 	StoredPaymentMethods   []interface{} `json:"storedPaymentMethods,omitempty"`
+}
+
+type PaymentsReq struct {
+	AccountInfo    interface{} `json:"accountInfo,omitempty"`
+	AdditionalData interface{} `json:"additionalData,omitempty"`
+	Amount         struct {
+		Currency string  `json:"currency,omitempty"`
+		Value    float64 `json:"value,omitempty"`
+	} `json:"amount,omitempty"`
+	Reference       string      `json:"reference,omitempty"`
+	PaymentMethod   interface{} `json:"paymentMethod,omitempty"`
+	ReturnURL       string      `json:"returnUrl,omitempty"`
+	Channel         string      `json:"channel,omitempty"`
+	CountryCode     string      `json:"countryCode,omitempty"`
+	MerchantAccount string      `json:"merchantAccount,omitempty"`
+}
+
+type PaymentsRes struct {
+	ResultCode   string        `json:"resultCode,omitempty"`
+	PspReference interface{}   `json:"pspReference,omitempty"`
+	Action       interface{}   `json:"action,omitempty"`
+	Details      []interface{} `json:"details,omitempty"`
 }
