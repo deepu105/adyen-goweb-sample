@@ -10,8 +10,10 @@
 4. The merchant account to use is not clear enough, since there were two accounts and only one worked for the API
 5. In "Step 2: Add Components to your payments form" I find the flow would be easier if example is followed by explanation
 6. Would be nice to give example of using reference for mounting Components in Vue/React
-7. The redirect behaviors from `checkout.createFromAction` is not very clear
-8. The amount gets messed up during redirection
+7. The redirect behaviors from `checkout.createFromAction` is not very clear for 3DS2 when POST redirect is involved, this is where I spent the most time, so might be nice to provide some simple samples here else you would have to dig up https://github.com/adyen-examples/ and go through it
+8. The amount gets messed up during redirection when there are decimal points
+9. The country dropdown in the billing address of component doesn't work with standard list filtering
+10. The state field in the billing address of component resets when selecting country
 
 ### Website
 

@@ -36,6 +36,9 @@ type PaymentMethodsRes struct {
 	OneClickPaymentMethods []interface{} `json:"oneClickPaymentMethods,omitempty"`
 	PaymentMethods         []interface{} `json:"paymentMethods,omitempty"`
 	StoredPaymentMethods   []interface{} `json:"storedPaymentMethods,omitempty"`
+	Status                 interface{}   `json:"status,omitempty"`
+	ErrorCode              string        `json:"errorCode,omitempty"`
+	Message                string        `json:"message,omitempty"`
 }
 
 type PaymentsReq struct {
@@ -51,11 +54,31 @@ type PaymentsReq struct {
 	Channel         string      `json:"channel,omitempty"`
 	CountryCode     string      `json:"countryCode,omitempty"`
 	MerchantAccount string      `json:"merchantAccount,omitempty"`
+	BrowserInfo     interface{} `json:"browserInfo,omitempty"`
+	BillingAddress  interface{} `json:"billingAddress,omitempty"`
+	ShopperIP       string      `json:"shopperIP,omitempty"`
+	Origin          string      `json:"origin,omitempty"`
 }
 
 type PaymentsRes struct {
-	ResultCode   string        `json:"resultCode,omitempty"`
-	PspReference interface{}   `json:"pspReference,omitempty"`
-	Action       interface{}   `json:"action,omitempty"`
-	Details      []interface{} `json:"details,omitempty"`
+	ResultCode    string        `json:"resultCode,omitempty"`
+	RefusalReason string        `json:"refusalReason,omitempty"`
+	PspReference  interface{}   `json:"pspReference,omitempty"`
+	Action        interface{}   `json:"action,omitempty"`
+	Details       []interface{} `json:"details,omitempty"`
+	Status        int           `json:"status,omitempty"`
+	ErrorCode     string        `json:"errorCode,omitempty"`
+	Message       string        `json:"message,omitempty"`
+}
+
+type PaymentDetailsReq struct {
+	Details                   interface{} `json:"details,omitempty"`
+	PaymentData               string      `json:"paymentData,omitempty"`
+	ThreeDSAuthenticationOnly bool        `json:"threeDSAuthenticationOnly,omitempty"`
+}
+
+type Redirect struct {
+	MD      string
+	PaRes   string
+	Payload string `form:"payload"`
 }

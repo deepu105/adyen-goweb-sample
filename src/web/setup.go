@@ -32,6 +32,8 @@ func Init() {
 
 	// Serve frontend static files
 	router.Use(static.Serve("/", static.LocalFile("./static", true)))
+	router.GET("/redirect", RedirectHandler)
+	router.POST("/redirect", RedirectHandler)
 
 	// Setup route group and routes for the API
 	api := router.Group("/api")
@@ -43,8 +45,10 @@ func Init() {
 		})
 	}
 
+	api.GET("/clientIP", ClientIP)
 	api.POST("/paymentMethods", PaymentMethodsHandler)
 	api.POST("/payments", PaymentsHandler)
+	api.POST("/paymentDetails", PaymentDetailsHandler)
 
 	// Start and run the server
 	router.Run(":3000")
