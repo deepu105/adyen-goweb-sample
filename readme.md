@@ -37,7 +37,7 @@
 
 ### Good to have
 
-1. Go Lib for API, I tried to generate with openAPi generator, its looks fine, would need a little effort to package and validate
+1. Go Lib for API, I tried to generate with openAPI generator, its looks fine, but with some effort we can make it less verbose and more user friendly as well, else we would need a little effort to package and validate
    1. its quite a lot of effort to do the manual integration sine the APIs have pretty complex response/req objects
    2. manual integration would be hard to maintain when API changes
    3. Companies using Go might prefer Stripe since they provide a Go lib
