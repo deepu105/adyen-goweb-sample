@@ -24,6 +24,10 @@
 12. The "Web Components integration guide" doesn't mention that 3DS payments require slightly different flow, one might not realize this when doing the integration. I had to do a lot of rework when I realized this
 13. The test environment feels a bit buggy and unpolished and hence may not give a lot of confidence to Dev who are evaluating, trying out the API
 14. How is the live account API URL obtained?
+15. Payment types in paymentMethods response doesn't always match with component id used for `checkout.create("card")` which is bit weird. For example card/scheme
+16. Finding the correct id to use for component is not straight forward, you have to drill into multiple levels of docs for each type to find that. It would be nice to have a table of all components with their ids may here https://docs.adyen.com/checkout/supported-payment-methods
+17. Couldn't get the Klarna component to work
+18. The amount value field in API spec is int64, shouldn't this be float?
 
 ### Website
 
@@ -33,7 +37,7 @@
 
 ### Good to have
 
-1. Go Lib for API
+1. Go Lib for API, I tried to generate with openAPi generator, its looks fine, would need a little effort to package and validate
    1. its quite a lot of effort to do the manual integration sine the APIs have pretty complex response/req objects
    2. manual integration would be hard to maintain when API changes
    3. Companies using Go might prefer Stripe since they provide a Go lib
