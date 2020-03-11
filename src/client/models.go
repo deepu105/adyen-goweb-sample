@@ -21,6 +21,14 @@ type Amount struct {
 	Value    float64 `json:"value,omitempty"`
 }
 
+type Redirect struct {
+	MD      string
+	PaRes   string
+	Payload string `form:"payload"`
+}
+
+/**** /paymentMethods API models ****/
+
 type PaymentMethodsReq struct {
 	AdditionalData            interface{} `json:"additionalData,omitempty"`
 	AllowedPaymentMethods     []string    `json:"allowedPaymentMethods,omitempty"`
@@ -43,6 +51,8 @@ type PaymentMethodsRes struct {
 	ErrorCode              string        `json:"errorCode,omitempty"`
 	Message                string        `json:"message,omitempty"`
 }
+
+/**** /payments API models ****/
 
 type PaymentsReq struct {
 	AccountInfo     interface{} `json:"accountInfo,omitempty"`
@@ -71,14 +81,10 @@ type PaymentsRes struct {
 	Message       string        `json:"message,omitempty"`
 }
 
+/**** /payments/details API models ****/
+
 type PaymentDetailsReq struct {
 	Details                   interface{} `json:"details,omitempty"`
 	PaymentData               string      `json:"paymentData,omitempty"`
 	ThreeDSAuthenticationOnly bool        `json:"threeDSAuthenticationOnly,omitempty"`
-}
-
-type Redirect struct {
-	MD      string
-	PaRes   string
-	Payload string `form:"payload"`
 }
