@@ -87,7 +87,6 @@ class Home extends React.Component {
       refusalReason: params.get("RefusalReason") ? decodeURI(params.get("RefusalReason")) : null
     };
     if (paymentRes.pspReference) {
-      // @ts-ignore
       this.setState({ paid: true, paymentRes });
     } else {
       paymentMethods(amount, currency).then(paymentMethodsResponse => {
@@ -212,7 +211,7 @@ class Home extends React.Component {
               {paymentMethodVal ? (
                 <div>
                   <button type="button" className="btn btn-primary" disabled={!valid} onClick={this.payNow}>
-                    Pay now
+                    Pay {amount} {currency} now
                   </button>
                 </div>
               ) : null}

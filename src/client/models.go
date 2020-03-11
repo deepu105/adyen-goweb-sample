@@ -47,7 +47,7 @@ type PaymentMethodsRes struct {
 	OneClickPaymentMethods []interface{} `json:"oneClickPaymentMethods,omitempty"`
 	PaymentMethods         []interface{} `json:"paymentMethods,omitempty"`
 	StoredPaymentMethods   []interface{} `json:"storedPaymentMethods,omitempty"`
-	Status                 interface{}   `json:"status,omitempty"`
+	Status                 int           `json:"status,omitempty"`
 	ErrorCode              string        `json:"errorCode,omitempty"`
 	Message                string        `json:"message,omitempty"`
 }

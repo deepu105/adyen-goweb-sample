@@ -37,6 +37,10 @@ func PaymentMethodsHandler(c *gin.Context) {
 		handleError("PaymentMethodsHandler", c, err)
 		return
 	}
+	if res.Status > 200 {
+		c.JSON(res.Status, res)
+		return
+	}
 	c.JSON(http.StatusOK, res)
 	return
 }
@@ -53,6 +57,10 @@ func PaymentsHandler(c *gin.Context) {
 	res, err := checkoutAPI.Payments(req)
 	if err != nil {
 		handleError("PaymentsHandler", c, err)
+		return
+	}
+	if res.Status > 200 {
+		c.JSON(res.Status, res)
 		return
 	}
 	if res.Action != nil {
@@ -76,6 +84,10 @@ func PaymentDetailsHandler(c *gin.Context) {
 	res, err := checkoutAPI.PaymentDetails(req)
 	if err != nil {
 		handleError("PaymentDetailsHandler", c, err)
+		return
+	}
+	if res.Status > 200 {
+		c.JSON(res.Status, res)
 		return
 	}
 	c.JSON(http.StatusOK, res)
