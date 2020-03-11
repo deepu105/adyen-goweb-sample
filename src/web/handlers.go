@@ -5,6 +5,7 @@ import (
 	"go-client/src/client"
 	"log"
 	"net/http"
+	"net/url"
 
 	"github.com/gin-gonic/gin"
 )
@@ -114,8 +115,10 @@ func RedirectHandler(c *gin.Context) {
 		return
 	}
 	if res.PspReference != "" {
-    // TODO encode params
-		c.Redirect(http.StatusFound, fmt.Sprintf("/?PspReference=%s&ResultCode=%s&RefusalReason=%s", res.PspReference, res.ResultCode, res.RefusalReason))
+		c.Redirect(
+			http.StatusFound,
+			fmt.Sprintf("/?PspReference=%s&ResultCode=%s&RefusalReason=%s", url.QueryEscape(res.PspReference), url.QueryEscape(res.ResultCode), url.QueryEscape(res.RefusalReason)),
+		)
 		return
 	}
 	c.JSON(res.Status, res)

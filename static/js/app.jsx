@@ -72,7 +72,7 @@ class Home extends React.Component {
       paymentRes: {}
     };
     this.onChange = this.onChange.bind(this);
-    this.onAdditionalDetails = this.onAdditionalDetails.bind(this);
+    // this.onAdditionalDetails = this.onAdditionalDetails.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
     this.payNow = this.payNow.bind(this);
   }
@@ -82,15 +82,11 @@ class Home extends React.Component {
     // @ts-ignore
     let params = new URL(document.location).searchParams;
     const paymentRes = {
-      pspReference: params.get("PspReference"),
-      resultCode: params.get("ResultCode"),
-      refusalReason: params.get("RefusalReason")
+      pspReference: params.get("PspReference") ? decodeURI(params.get("PspReference")) : null,
+      resultCode: params.get("ResultCode") ? decodeURI(params.get("ResultCode")) : null,
+      refusalReason: params.get("RefusalReason") ? decodeURI(params.get("RefusalReason")) : null
     };
     if (paymentRes.pspReference) {
-      // TODO decode params
-      // pspReference = decodeURI(pspReference);
-      // resultCode = decodeURI(resultCode);
-      // refusalReason = decodeURI(refusalReason);
       // @ts-ignore
       this.setState({ paid: true, paymentRes });
     } else {
@@ -99,7 +95,7 @@ class Home extends React.Component {
         this.checkout = new AdyenCheckout({
           ...configuration,
           paymentMethodsResponse,
-          onAdditionalDetails: this.onAdditionalDetails,
+          // onAdditionalDetails: this.onAdditionalDetails,
           onChange: this.onChange
         });
       });
@@ -114,11 +110,11 @@ class Home extends React.Component {
     });
   }
 
-  onAdditionalDetails(state) {
-    this.setState({
-      paymentDetails: state.data
-    });
-  }
+  // onAdditionalDetails(state) {
+  //   this.setState({
+  //     paymentDetails: state.data
+  //   });
+  // }
 
   handleInputChange(event) {
     const { value, id, name } = event.target;
@@ -151,7 +147,7 @@ class Home extends React.Component {
   }
 
   render() {
-    const { paid, valid, paymentMethodVal, paymentRes } = this.state;
+    const { paid, valid, paymentMethodVal, paymentRes, amount, currency } = this.state;
     return (
       <div className="container d-flex justify-content-center">
         <div className="col-8 jumbotron">
@@ -166,7 +162,7 @@ class Home extends React.Component {
             paymentRes && paymentRes.resultCode ? (
               <React.Fragment>
                 <h4 className="title mb-3">Payment {paymentRes.resultCode}</h4>
-                <div>{paymentRes.refusalReason ? <span>Reason: {paymentRes.refusalReason}</span> : ""}</div>
+                <div>{paymentRes.refusalReason ? <span>Reason: {paymentRes.refusalReason}</span> : null}</div>
                 <div>Payment reference: {paymentRes.pspReference}</div>
               </React.Fragment>
             ) : (
@@ -174,7 +170,10 @@ class Home extends React.Component {
             )
           ) : (
             <React.Fragment>
-              <h4 className="title mb-3">Select Payment</h4>
+              <h4 className="title mb-3">
+                Amount: {amount} {currency}
+              </h4>
+              <h5 className="title mb-3">Select Payment</h5>
               <div className="select-payment mb-5">
                 <div className="form-check form-check-inline">
                   <input
@@ -204,17 +203,19 @@ class Home extends React.Component {
                 </div>
               </div>
               <div className="mb-5">
-                <h4 className="title mb-3">Pay with {paymentMethodVal}</h4>
+                {paymentMethodVal ? <h5 className="title mb-3">Pay with {paymentMethodVal}</h5> : null}
                 <div className="col-12">
                   <div ref={this.paymentContainer}></div>
                   <div ref={this.idealAction}></div>
                 </div>
               </div>
-              <div>
-                <button type="button" className="btn btn-primary" disabled={!valid} onClick={this.payNow}>
-                  Pay now
-                </button>
-              </div>
+              {paymentMethodVal ? (
+                <div>
+                  <button type="button" className="btn btn-primary" disabled={!valid} onClick={this.payNow}>
+                    Pay now
+                  </button>
+                </div>
+              ) : null}
             </React.Fragment>
           )}
         </div>

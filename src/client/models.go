@@ -63,7 +63,7 @@ type PaymentsReq struct {
 type PaymentsRes struct {
 	ResultCode    string        `json:"resultCode,omitempty"`
 	RefusalReason string        `json:"refusalReason,omitempty"`
-	PspReference  interface{}   `json:"pspReference,omitempty"`
+	PspReference  string        `json:"pspReference,omitempty"`
 	Action        interface{}   `json:"action,omitempty"`
 	Details       []interface{} `json:"details,omitempty"`
 	Status        int           `json:"status,omitempty"`
