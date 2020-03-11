@@ -10,16 +10,13 @@ import (
 	"time"
 )
 
-// ADYEN_API is the API URL to use
-const ADYEN_API = "https://checkout-test.adyen.com/v51/"
-
 // Init creates a new CheckoutAPI client if it doesn't exist already
 func (api *CheckoutAPI) Init(config ClientConfig) (*CheckoutAPI, error) {
 	if api == nil {
 		api = &CheckoutAPI{}
 	}
 	if config == (ClientConfig{}) {
-		return nil, fmt.Errorf("A configuration is required")
+		return nil, fmt.Errorf("A valid configuration is required")
 	}
 	if config.APIKey == "" {
 		return nil, fmt.Errorf("Adyen API key is required in the configuration")
@@ -32,113 +29,77 @@ func (api *CheckoutAPI) Init(config ClientConfig) (*CheckoutAPI, error) {
 	}
 	api.client = httpClient
 	api.config = config
+	// Set the API URL to use according to environment
+	if config.Environment == "live" {
+		api.BaseURL = "https://checkout.adyen.com/v51/" // TODO use correct URL
+	} else {
+		api.BaseURL = "https://checkout-test.adyen.com/v51/"
+	}
 	return api, nil
 }
 
-// PaymentMethods will fetch all availabel payment methods supported by the Adyen API
-func (api *CheckoutAPI) PaymentMethods(req PaymentMethodsReq) (PaymentMethodsRes, error) {
-	req.MerchantAccount = api.config.MerchantAccount
-
-	paymentRes := PaymentMethodsRes{}
+// MakeHTTPRequest wraps the common behavior of HTTP requests
+func (api *CheckoutAPI) MakeHTTPRequest(req interface{}, httpMethod, url string) ([]byte, error) {
 	reqBody, err := json.Marshal(req)
 	if err != nil {
-		return paymentRes, err
+		return nil, err
 	}
 
-	httpReq, err := http.NewRequest("POST", ADYEN_API+"/paymentMethods", bytes.NewBuffer(reqBody))
+	httpReq, err := http.NewRequest(httpMethod, api.BaseURL+url, bytes.NewBuffer(reqBody))
 	if err != nil {
-		return paymentRes, err
+		return nil, err
 	}
 
 	updateHeaders(httpReq, api.config.APIKey)
 
-	log.Printf("PaymentMethods Request: %s\n", string(reqBody))
+	log.Printf("Request for %s API: %s\n", url, string(reqBody))
 
 	resp, err := api.client.Do(httpReq)
 	if err != nil {
-		return paymentRes, err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return paymentRes, err
+		return nil, err
 	}
 
-	json.Unmarshal(body, &paymentRes)
+	return body, nil
+}
 
+// PaymentMethods will fetch all availabel payment methods supported by the Adyen API
+func (api *CheckoutAPI) PaymentMethods(req PaymentMethodsReq) (PaymentMethodsRes, error) {
+	req.MerchantAccount = api.config.MerchantAccount
+	paymentRes := PaymentMethodsRes{}
+	res, err := api.MakeHTTPRequest(&req, http.MethodPost, "paymentMethods")
+	if err != nil {
+		return paymentRes, err
+	}
+	json.Unmarshal(res, &paymentRes)
 	return paymentRes, nil
 }
 
 // Payments will submit a payment to the Adyen API
 func (api *CheckoutAPI) Payments(req PaymentsReq) (PaymentsRes, error) {
 	req.MerchantAccount = api.config.MerchantAccount
-
 	paymentRes := PaymentsRes{}
-	reqBody, err := json.Marshal(req)
+	res, err := api.MakeHTTPRequest(&req, http.MethodPost, "payments")
 	if err != nil {
 		return paymentRes, err
 	}
-
-	httpReq, err := http.NewRequest("POST", ADYEN_API+"/payments", bytes.NewBuffer(reqBody))
-	if err != nil {
-		return paymentRes, err
-	}
-
-	updateHeaders(httpReq, api.config.APIKey)
-
-	log.Printf("Payments Request: %s\n", string(reqBody))
-
-	resp, err := api.client.Do(httpReq)
-	if err != nil {
-		return paymentRes, err
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return paymentRes, err
-	}
-
-	// log.Printf("PaymentDetails Res: %s", string(body))
-
-	json.Unmarshal(body, &paymentRes)
-
+	json.Unmarshal(res, &paymentRes)
 	return paymentRes, nil
 }
 
 // PaymentDetails will submit a payment to the Adyen API
 func (api *CheckoutAPI) PaymentDetails(req PaymentDetailsReq) (PaymentsRes, error) {
 	paymentRes := PaymentsRes{}
-	reqBody, err := json.Marshal(req)
+	res, err := api.MakeHTTPRequest(&req, http.MethodPost, "payments/details")
 	if err != nil {
 		return paymentRes, err
 	}
-
-	httpReq, err := http.NewRequest("POST", ADYEN_API+"/payments/details", bytes.NewBuffer(reqBody))
-	if err != nil {
-		return paymentRes, err
-	}
-
-	updateHeaders(httpReq, api.config.APIKey)
-
-	log.Printf("PaymentDetails Request: %s\n", string(reqBody))
-
-	resp, err := api.client.Do(httpReq)
-	if err != nil {
-		return paymentRes, err
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return paymentRes, err
-	}
-
-	log.Printf("PaymentDetails Res: %s", string(body))
-
-	json.Unmarshal(body, &paymentRes)
-
+	json.Unmarshal(res, &paymentRes)
 	return paymentRes, nil
 }
 

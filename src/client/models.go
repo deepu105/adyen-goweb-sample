@@ -11,24 +11,27 @@ type ClientConfig struct {
 
 // CheckoutAPI is used to call Adyen checkout API https://docs.adyen.com/api-explorer/#/PaymentSetupAndVerificationService/v51/overview
 type CheckoutAPI struct {
-	config ClientConfig
-	client *http.Client
+	config  ClientConfig
+	client  *http.Client
+	BaseURL string
+}
+
+type Amount struct {
+	Currency string  `json:"currency,omitempty"`
+	Value    float64 `json:"value,omitempty"`
 }
 
 type PaymentMethodsReq struct {
-	AdditionalData        interface{} `json:"additionalData,omitempty"`
-	AllowedPaymentMethods []string    `json:"allowedPaymentMethods,omitempty"`
-	BlockedPaymentMethods []string    `json:"blockedPaymentMethods,omitempty"`
-	Amount                struct {
-		Currency string  `json:"currency,omitempty"`
-		Value    float64 `json:"value,omitempty"`
-	} `json:"amount,omitempty"`
-	Channel                   string `json:"channel,omitempty"`
-	CountryCode               string `json:"countryCode,omitempty"`
-	MerchantAccount           string `json:"merchantAccount,omitempty"`
-	ShopperLocale             string `json:"shopperLocale,omitempty"`
-	ShopperReference          string `json:"shopperReference,omitempty"`
-	ThreeDSAuthenticationOnly bool   `json:"threeDSAuthenticationOnly,omitempty"`
+	AdditionalData            interface{} `json:"additionalData,omitempty"`
+	AllowedPaymentMethods     []string    `json:"allowedPaymentMethods,omitempty"`
+	BlockedPaymentMethods     []string    `json:"blockedPaymentMethods,omitempty"`
+	Amount                    Amount      `json:"amount,omitempty"`
+	Channel                   string      `json:"channel,omitempty"`
+	CountryCode               string      `json:"countryCode,omitempty"`
+	MerchantAccount           string      `json:"merchantAccount,omitempty"`
+	ShopperLocale             string      `json:"shopperLocale,omitempty"`
+	ShopperReference          string      `json:"shopperReference,omitempty"`
+	ThreeDSAuthenticationOnly bool        `json:"threeDSAuthenticationOnly,omitempty"`
 }
 
 type PaymentMethodsRes struct {
@@ -42,12 +45,9 @@ type PaymentMethodsRes struct {
 }
 
 type PaymentsReq struct {
-	AccountInfo    interface{} `json:"accountInfo,omitempty"`
-	AdditionalData interface{} `json:"additionalData,omitempty"`
-	Amount         struct {
-		Currency string  `json:"currency,omitempty"`
-		Value    float64 `json:"value,omitempty"`
-	} `json:"amount,omitempty"`
+	AccountInfo     interface{} `json:"accountInfo,omitempty"`
+	AdditionalData  interface{} `json:"additionalData,omitempty"`
+	Amount          Amount      `json:"amount,omitempty"`
 	Reference       string      `json:"reference,omitempty"`
 	PaymentMethod   interface{} `json:"paymentMethod,omitempty"`
 	ReturnURL       string      `json:"returnUrl,omitempty"`

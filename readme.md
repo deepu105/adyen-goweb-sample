@@ -23,6 +23,7 @@
 11. The state field in the billing address of component resets when selecting country
 12. The "Web Components integration guide" doesn't mention that 3DS payments require slightly different flow, one might not realize this when doing the integration. I had to do a lot of rework when I realized this
 13. The test environment feels a bit buggy and unpolished and hence may not give a lot of confidence to Dev who are evaluating, trying out the API
+14. How is the live account API URL obtained?
 
 ### Website
 
