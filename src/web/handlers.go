@@ -109,19 +109,19 @@ func PaymentsHandler(c *gin.Context) {
 // PaymentDetailsHandler gets payment details using Adyen API
 func PaymentDetailsHandler(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
-	var req client.PaymentDetailsReq
+	var req adyenapi.DetailsRequest
 
 	if err := c.BindJSON(&req); err != nil {
 		handleError("PaymentDetailsHandler", c, err, nil)
 		return
 	}
-	res, err := checkoutAPI.PaymentDetails(req)
+	log.Printf("Request for %s API::\n%+v\n", "PaymentDetails", req)
+	res, httpRes, err := aclient.DefaultApi.PaymentsDetailsPost(nil, &adyenapi.PaymentsDetailsPostOpts{
+		optional.NewInterface(req),
+	})
+	log.Printf("HTTP Response for %s API::\n%+v\n", "PaymentDetails", httpRes)
 	if err != nil {
-		handleError("PaymentDetailsHandler", c, err, nil)
-		return
-	}
-	if res.Status > 200 {
-		c.JSON(res.Status, res)
+		handleError("PaymentDetailsHandler", c, err, httpRes)
 		return
 	}
 	c.JSON(http.StatusOK, res)
@@ -142,23 +142,28 @@ func RedirectHandler(c *gin.Context) {
 		handleError("RedirectHandler", c, err, nil)
 		return
 	}
-	var details map[string]string
+	var details map[string]interface{}
 	if redirect.Payload != "" {
-		details = map[string]string{
+		details = map[string]interface{}{
 			"payload": redirect.Payload,
 		}
 	} else {
-		details = map[string]string{
+		details = map[string]interface{}{
 			"MD":    redirect.MD,
 			"PaRes": redirect.PaRes,
 		}
 	}
-	res, err := checkoutAPI.PaymentDetails(client.PaymentDetailsReq{
-		PaymentData: paymentData,
-		Details:     details,
+
+	req := adyenapi.DetailsRequest{Details: details, PaymentData: paymentData}
+
+	log.Printf("Request for %s API::\n%+v\n", "PaymentDetails", req)
+	res, httpRes, err := aclient.DefaultApi.PaymentsDetailsPost(nil, &adyenapi.PaymentsDetailsPostOpts{
+		optional.NewInterface(req),
 	})
+	log.Printf("HTTP Response for %s API::\n%+v\n", "PaymentDetails", httpRes)
+
 	if err != nil {
-		handleError("RedirectHandler", c, err, nil)
+		handleError("RedirectHandler", c, err, httpRes)
 		return
 	}
 	if res.PspReference != "" {
@@ -168,6 +173,6 @@ func RedirectHandler(c *gin.Context) {
 		)
 		return
 	}
-	c.JSON(res.Status, res)
+	c.JSON(httpRes.StatusCode, httpRes.Status)
 	return
 }
