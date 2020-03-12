@@ -63,7 +63,7 @@ class Home extends React.Component {
     this.idealAction = React.createRef();
     this.state = {
       clientIP: "",
-      amount: 113.5,
+      amount: 113,
       currency: "EUR",
       valid: false,
       paid: false,

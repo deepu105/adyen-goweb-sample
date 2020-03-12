@@ -2,6 +2,7 @@ package web
 
 import (
 	"fmt"
+	"go-client/src/adyenapi"
 	"go-client/src/client"
 	"net/http"
 	"os"
@@ -11,7 +12,11 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var checkoutAPI *client.CheckoutAPI
+var (
+	checkoutAPI     *client.CheckoutAPI
+	aclient         *adyenapi.APIClient
+	merchantAccount string
+)
 
 func Init() {
 	// Set the router as the default one shipped with Gin
@@ -24,6 +29,12 @@ func Init() {
 		MerchantAccount: os.Getenv("ADYEN_MERCHANT"),
 		APIKey:          os.Getenv("ADYEN_API_KEY"),
 	})
+
+	config := adyenapi.NewConfiguration()
+	config.AddDefaultHeader("x-API-key", os.Getenv("ADYEN_API_KEY"))
+	merchantAccount = os.Getenv("ADYEN_MERCHANT")
+
+	aclient = adyenapi.NewAPIClient(config)
 
 	if err != nil {
 		fmt.Printf("Error initializing API client: %s", err.Error())

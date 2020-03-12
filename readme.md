@@ -26,8 +26,8 @@
 14. How is the live account API URL obtained?
 15. Payment types in paymentMethods response doesn't always match with component id used for `checkout.create("card")` which is bit weird. For example card/scheme
 16. Finding the correct id to use for component is not straight forward, you have to drill into multiple levels of docs for each type to find that. It would be nice to have a table of all components with their ids may here https://docs.adyen.com/checkout/supported-payment-methods
-17. Couldn't get the Klarna component to work
-18. The amount value field in API spec is int64, shouldn't this be float?
+17. The amount value field in API spec is int64, shouldn't this be float?
+18. Error messages are not very helpful as they don't give a lot of info on what is wrong with the request. This results in developer having to do a lot of trial and error and ultimately being stuck here
 
 ### Website
 

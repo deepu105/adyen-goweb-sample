@@ -12,9 +12,11 @@ package adyenapi
 
 import (
 	_context "context"
+	"fmt"
 	_ioutil "io/ioutil"
 	_nethttp "net/http"
 	_neturl "net/url"
+
 	"github.com/antihax/optional"
 )
 
@@ -28,7 +30,7 @@ type DefaultApiService service
 
 // PaymentLinksPostOpts Optional parameters for the method 'PaymentLinksPost'
 type PaymentLinksPostOpts struct {
-    CreatePaymentLinkRequest optional.Interface
+	CreatePaymentLinkRequest optional.Interface
 }
 
 /*
@@ -36,7 +38,7 @@ PaymentLinksPost Creates a payment link.
 Creates a payment link to our hosted payment form where shoppers can pay. The list of payment methods presented to the shopper depends on the &#x60;currency&#x60; and &#x60;country&#x60; parameters sent in the request.  For more information, refer to [Pay by Link documentation](https://docs.adyen.com/checkout/pay-by-link#create-payment-links-through-api).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *PaymentLinksPostOpts - Optional Parameters:
- * @param "CreatePaymentLinkRequest" (optional.Interface of CreatePaymentLinkRequest) - 
+ * @param "CreatePaymentLinkRequest" (optional.Interface of CreatePaymentLinkRequest) -
 @return CreatePaymentLinkResponse
 */
 func (a *DefaultApiService) PaymentLinksPost(ctx _context.Context, localVarOptionals *PaymentLinksPostOpts) (CreatePaymentLinkResponse, *_nethttp.Response, error) {
@@ -129,7 +131,7 @@ func (a *DefaultApiService) PaymentLinksPost(ctx _context.Context, localVarOptio
 
 // PaymentMethodsPostOpts Optional parameters for the method 'PaymentMethodsPost'
 type PaymentMethodsPostOpts struct {
-    PaymentMethodsRequest optional.Interface
+	PaymentMethodsRequest optional.Interface
 }
 
 /*
@@ -137,7 +139,7 @@ PaymentMethodsPost Returns available payment methods.
 Queries the available payment methods for a transaction based on the transaction context (like amount, country, and currency). Besides giving back a list of the available payment methods, the response also returns which input details you need to collect from the shopper (to be submitted to &#x60;/payments&#x60;).  Although we highly recommend using this endpoint to ensure you are always offering the most up-to-date list of payment methods, its usage is optional. You can, for example, also cache the &#x60;/paymentMethods&#x60; response and update it once a week.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *PaymentMethodsPostOpts - Optional Parameters:
- * @param "PaymentMethodsRequest" (optional.Interface of PaymentMethodsRequest) - 
+ * @param "PaymentMethodsRequest" (optional.Interface of PaymentMethodsRequest) -
 @return PaymentMethodsResponse
 */
 func (a *DefaultApiService) PaymentMethodsPost(ctx _context.Context, localVarOptionals *PaymentMethodsPostOpts) (PaymentMethodsResponse, *_nethttp.Response, error) {
@@ -230,7 +232,7 @@ func (a *DefaultApiService) PaymentMethodsPost(ctx _context.Context, localVarOpt
 
 // PaymentSessionPostOpts Optional parameters for the method 'PaymentSessionPost'
 type PaymentSessionPostOpts struct {
-    PaymentSetupRequest optional.Interface
+	PaymentSetupRequest optional.Interface
 }
 
 /*
@@ -238,7 +240,7 @@ PaymentSessionPost Creates a payment session.
 Provides the data object that can be used to start the Checkout SDK. To set up the payment, pass its amount, currency, and other required parameters. We use this to optimise the payment flow and perform better risk assessment of the transaction.  For more information, refer to [How it works](https://docs.adyen.com/checkout#howitworks).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *PaymentSessionPostOpts - Optional Parameters:
- * @param "PaymentSetupRequest" (optional.Interface of PaymentSetupRequest) - 
+ * @param "PaymentSetupRequest" (optional.Interface of PaymentSetupRequest) -
 @return PaymentSetupResponse
 */
 func (a *DefaultApiService) PaymentSessionPost(ctx _context.Context, localVarOptionals *PaymentSessionPostOpts) (PaymentSetupResponse, *_nethttp.Response, error) {
@@ -331,7 +333,7 @@ func (a *DefaultApiService) PaymentSessionPost(ctx _context.Context, localVarOpt
 
 // PaymentsDetailsPostOpts Optional parameters for the method 'PaymentsDetailsPost'
 type PaymentsDetailsPostOpts struct {
-    DetailsRequest optional.Interface
+	DetailsRequest optional.Interface
 }
 
 /*
@@ -339,7 +341,7 @@ PaymentsDetailsPost Submits details for a payment.
 Submits details for a payment created using &#x60;/payments&#x60;. This step is only needed when no final state has been reached on the &#x60;/payments&#x60; request (for example for 3D Secure, or when getting redirected back directly from a payment method using an app switch).  The exact details, which need to be sent to this endpoint, are always specified in the response of the associated &#x60;/payments&#x60; request.  In addition, the endpoint can be used to verify a &#x60;payload&#x60;, which is returned after coming back from the Checkout SDK or any of the redirect based methods on the Checkout API.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *PaymentsDetailsPostOpts - Optional Parameters:
- * @param "DetailsRequest" (optional.Interface of DetailsRequest) - 
+ * @param "DetailsRequest" (optional.Interface of DetailsRequest) -
 @return PaymentResponse
 */
 func (a *DefaultApiService) PaymentsDetailsPost(ctx _context.Context, localVarOptionals *PaymentsDetailsPostOpts) (PaymentResponse, *_nethttp.Response, error) {
@@ -432,7 +434,7 @@ func (a *DefaultApiService) PaymentsDetailsPost(ctx _context.Context, localVarOp
 
 // PaymentsPostOpts Optional parameters for the method 'PaymentsPost'
 type PaymentsPostOpts struct {
-    PaymentRequest optional.Interface
+	PaymentRequest optional.Interface
 }
 
 /*
@@ -440,7 +442,7 @@ PaymentsPost Starts a transaction.
 Sends payment parameters (like amount, country, and currency) together with the input details collected from the shopper. The response returns the result of the payment request: * For some payment methods (e.g. Visa, Mastercard, and SEPA Direct Debits) you&#39;ll get a final state in the &#x60;resultCode&#x60; (e.g. &#x60;authorised&#x60; or &#x60;refused&#x60;). * For other payment methods, you&#39;ll receive &#x60;redirectShopper&#x60; as &#x60;resultCode&#x60; together with a &#x60;redirectUrl&#x60;. In this case, the shopper must finalize the payment on the page behind the &#x60;redirectUrl&#x60;.
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *PaymentsPostOpts - Optional Parameters:
- * @param "PaymentRequest" (optional.Interface of PaymentRequest) - 
+ * @param "PaymentRequest" (optional.Interface of PaymentRequest) -
 @return PaymentResponse
 */
 func (a *DefaultApiService) PaymentsPost(ctx _context.Context, localVarOptionals *PaymentsPostOpts) (PaymentResponse, *_nethttp.Response, error) {
@@ -479,9 +481,11 @@ func (a *DefaultApiService) PaymentsPost(ctx _context.Context, localVarOptionals
 	// body params
 	if localVarOptionals != nil && localVarOptionals.PaymentRequest.IsSet() {
 		localVarOptionalPaymentRequest, localVarOptionalPaymentRequestok := localVarOptionals.PaymentRequest.Value().(PaymentRequest)
+
 		if !localVarOptionalPaymentRequestok {
 			return localVarReturnValue, nil, reportError("paymentRequest should be PaymentRequest")
 		}
+		fmt.Printf(">>>>>>>>>>>>>>>>>>>> Req >>>>>>>>> %-v", localVarOptionalPaymentRequest)
 		localVarPostBody = &localVarOptionalPaymentRequest
 	}
 
@@ -491,6 +495,7 @@ func (a *DefaultApiService) PaymentsPost(ctx _context.Context, localVarOptionals
 	}
 
 	localVarHTTPResponse, err := a.client.callAPI(r)
+	fmt.Printf(">>>>>>>>>>>>>>>>>>>> Res >>>>>>>>> %-v", localVarHTTPResponse)
 	if err != nil || localVarHTTPResponse == nil {
 		return localVarReturnValue, localVarHTTPResponse, err
 	}
@@ -533,7 +538,7 @@ func (a *DefaultApiService) PaymentsPost(ctx _context.Context, localVarOptionals
 
 // PaymentsResultPostOpts Optional parameters for the method 'PaymentsResultPost'
 type PaymentsResultPostOpts struct {
-    PaymentVerificationRequest optional.Interface
+	PaymentVerificationRequest optional.Interface
 }
 
 /*
@@ -541,7 +546,7 @@ PaymentsResultPost Verifies payment result.
 Verifies the payment result using the payload returned from the Checkout SDK.  For more information, refer to [How it works](https://docs.adyen.com/checkout#howitworks).
  * @param ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
  * @param optional nil or *PaymentsResultPostOpts - Optional Parameters:
- * @param "PaymentVerificationRequest" (optional.Interface of PaymentVerificationRequest) - 
+ * @param "PaymentVerificationRequest" (optional.Interface of PaymentVerificationRequest) -
 @return PaymentVerificationResponse
 */
 func (a *DefaultApiService) PaymentsResultPost(ctx _context.Context, localVarOptionals *PaymentsResultPostOpts) (PaymentVerificationResponse, *_nethttp.Response, error) {
