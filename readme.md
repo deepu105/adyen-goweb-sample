@@ -18,15 +18,15 @@
 6. Would be nice to give example of using reference for mounting Components in Vue/React
 7. The redirect behaviors from `checkout.createFromAction` is not very clear for 3DS2 when POST redirect is involved, this is where I spent the most time, so might be nice to provide some simple samples here else you would have to dig up https://github.com/adyen-examples/ and go through it to see how it can be done
 8. I don't see the purpose of `onAdditionalDetails` on the configuration and its not demonstrated why its needed?
-9. The amount gets messed up during iDEAL redirection when there are decimal points
+9. ~~The amount gets messed up during iDEAL redirection when there are decimal points~~ - Minor units
 10. The country dropdown in the billing address of component doesn't work with standard list filtering
 11. The state field in the billing address of component resets when selecting country
 12. The "Web Components integration guide" doesn't mention that 3DS payments require slightly different flow, one might not realize this when doing the integration. I had to do a lot of rework when I realized this
 13. The test environment feels a bit buggy and unpolished and hence may not give a lot of confidence to Dev who are evaluating, trying out the API
-14. How is the live account API URL obtained?
+14. ~~How is the live account API URL obtained?~~ - Mentioned in docs
 15. Payment types in paymentMethods response doesn't always match with component id used for `checkout.create("card")` which is bit weird. For example card/scheme
 16. Finding the correct id to use for component is not straight forward, you have to drill into multiple levels of docs for each type to find that. It would be nice to have a table of all components with their ids may here https://docs.adyen.com/checkout/supported-payment-methods
-17. The amount value field in API spec is int64, shouldn't this be float?
+17. ~~The amount value field in API spec is int64, shouldn't this be float?~~ - Minor units
 18. Error messages are not very helpful as they don't give a lot of info on what is wrong with the request. This results in developer having to do a lot of trial and error and ultimately being stuck here
 
 ### Website

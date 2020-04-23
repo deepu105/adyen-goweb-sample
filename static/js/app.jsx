@@ -33,16 +33,16 @@ async function payments(value, currency, paymentData, reference, clientIP) {
   return await response.json();
 }
 
-async function paymentDetails(paymentData, details) {
-  const response = await fetch("/api/paymentDetails", {
-    method: "POST",
-    body: JSON.stringify({
-      paymentData,
-      details
-    })
-  });
-  return await response.json();
-}
+// async function paymentDetails(paymentData, details) {
+//   const response = await fetch("/api/paymentDetails", {
+//     method: "POST",
+//     body: JSON.stringify({
+//       paymentData,
+//       details
+//     })
+//   });
+//   return await response.json();
+// }
 
 async function clientIP() {
   const response = await fetch("/api/clientIP");

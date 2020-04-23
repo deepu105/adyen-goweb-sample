@@ -2,13 +2,11 @@ package web
 
 import (
 	"fmt"
-	"go-client/src/adyenapi"
-	"go-client/src/client"
 	"log"
 	"net/http"
 	"net/url"
 
-	"github.com/antihax/optional"
+	"github.com/adyen/adyen-go-api-library/src/checkout"
 
 	"github.com/gin-gonic/gin"
 )
@@ -33,7 +31,7 @@ func handleError(method string, c *gin.Context, err error, httpRes *http.Respons
 // PaymentMethodsHandler retrieves a list of available payment methods from Adyen API
 func PaymentMethodsHandler(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
-	var req adyenapi.PaymentMethodsRequest
+	var req checkout.PaymentMethodsRequest
 
 	if err := c.BindJSON(&req); err != nil {
 		handleError("PaymentMethodsHandler", c, err, nil)
@@ -41,9 +39,7 @@ func PaymentMethodsHandler(c *gin.Context) {
 	}
 	req.MerchantAccount = merchantAccount
 	log.Printf("Request for %s API::\n%+v\n", "PaymentMethods", req)
-	res, httpRes, err := aclient.DefaultApi.PaymentMethodsPost(nil, &adyenapi.PaymentMethodsPostOpts{
-		optional.NewInterface(req),
-	})
+	res, httpRes, err := client.Checkout.PaymentMethods(&req)
 	if err != nil {
 		handleError("PaymentMethodsHandler", c, err, httpRes)
 		return
@@ -53,54 +49,25 @@ func PaymentMethodsHandler(c *gin.Context) {
 }
 
 // PaymentsHandler makes payment using Adyen API
-// func PaymentsHandler(c *gin.Context) {
-// 	c.Header("Content-Type", "application/json")
-// 	var req adyenapi.PaymentRequest
-
-// 	if err := c.BindJSON(&req); err != nil {
-// 		handleError("PaymentsHandler", c, err, nil)
-// 		return
-// 	}
-// 	req.MerchantAccount = merchantAccount
-// 	log.Printf("Request for %s API::\n%+v\n", "Payments", req)
-// 	res, httpRes, err := aclient.DefaultApi.PaymentsPost(nil, &adyenapi.PaymentsPostOpts{
-// 		optional.NewInterface(req),
-// 	})
-// 	log.Printf("Response for %s API::\n%+v\n", "Payments", res)
-// 	log.Printf("HTTP Response for %s API::\n%+v\n", "Payments", httpRes)
-// 	if err != nil {
-// 		handleError("PaymentsHandler", c, err, httpRes)
-// 		return
-// 	}
-// 	if res.Action.PaymentData != "" {
-// 		c.SetCookie(PaymentDataCookie, res.Action.PaymentData, 3600, "", "localhost", false, true)
-// 	}
-// 	c.JSON(http.StatusOK, res)
-// 	return
-// }
-
-// PaymentsHandler makes payment using Adyen API
 func PaymentsHandler(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
-	var req client.PaymentsReq
+	var req checkout.PaymentRequest
 
 	if err := c.BindJSON(&req); err != nil {
 		handleError("PaymentsHandler", c, err, nil)
 		return
 	}
-	res, err := checkoutAPI.Payments(req)
+	req.MerchantAccount = merchantAccount
+	log.Printf("Request for %s API::\n%+v\n", "Payments", req)
+	res, httpRes, err := client.Checkout.Payments(&req)
+	log.Printf("Response for %s API::\n%+v\n", "Payments", res)
+	log.Printf("HTTP Response for %s API::\n%+v\n", "Payments", httpRes)
 	if err != nil {
-		handleError("PaymentsHandler", c, err, nil)
+		handleError("PaymentsHandler", c, err, httpRes)
 		return
 	}
-	if res.Status > 200 {
-		c.JSON(res.Status, res)
-		return
-	}
-	if res.Action != nil {
-		if action, ok := res.Action.(map[string]interface{}); ok {
-			c.SetCookie(PaymentDataCookie, action["paymentData"].(string), 3600, "", "localhost", false, true)
-		}
+	if res.Action.PaymentData != "" {
+		c.SetCookie(PaymentDataCookie, res.Action.PaymentData, 3600, "", "localhost", false, true)
 	}
 	c.JSON(http.StatusOK, res)
 	return
@@ -109,16 +76,14 @@ func PaymentsHandler(c *gin.Context) {
 // PaymentDetailsHandler gets payment details using Adyen API
 func PaymentDetailsHandler(c *gin.Context) {
 	c.Header("Content-Type", "application/json")
-	var req adyenapi.DetailsRequest
+	var req checkout.DetailsRequest
 
 	if err := c.BindJSON(&req); err != nil {
 		handleError("PaymentDetailsHandler", c, err, nil)
 		return
 	}
 	log.Printf("Request for %s API::\n%+v\n", "PaymentDetails", req)
-	res, httpRes, err := aclient.DefaultApi.PaymentsDetailsPost(nil, &adyenapi.PaymentsDetailsPostOpts{
-		optional.NewInterface(req),
-	})
+	res, httpRes, err := client.Checkout.PaymentsDetails(&req)
 	log.Printf("HTTP Response for %s API::\n%+v\n", "PaymentDetails", httpRes)
 	if err != nil {
 		handleError("PaymentDetailsHandler", c, err, httpRes)
@@ -128,9 +93,15 @@ func PaymentDetailsHandler(c *gin.Context) {
 	return
 }
 
+type Redirect struct {
+	MD      string
+	PaRes   string
+	Payload string `form:"payload"`
+}
+
 // RedirectHandler handles POST and GET redirects from Adyen API
 func RedirectHandler(c *gin.Context) {
-	var redirect client.Redirect
+	var redirect Redirect
 	log.Println("Redirect received")
 
 	if err := c.ShouldBind(&redirect); err != nil {
@@ -154,12 +125,10 @@ func RedirectHandler(c *gin.Context) {
 		}
 	}
 
-	req := adyenapi.DetailsRequest{Details: details, PaymentData: paymentData}
+	req := checkout.DetailsRequest{Details: details, PaymentData: paymentData}
 
 	log.Printf("Request for %s API::\n%+v\n", "PaymentDetails", req)
-	res, httpRes, err := aclient.DefaultApi.PaymentsDetailsPost(nil, &adyenapi.PaymentsDetailsPostOpts{
-		optional.NewInterface(req),
-	})
+	res, httpRes, err := client.Checkout.PaymentsDetails(&req)
 	log.Printf("HTTP Response for %s API::\n%+v\n", "PaymentDetails", httpRes)
 
 	if err != nil {

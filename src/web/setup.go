@@ -1,20 +1,18 @@
 package web
 
 import (
-	"fmt"
-	"go-client/src/adyenapi"
-	"go-client/src/client"
 	"net/http"
 	"os"
 
+	"github.com/adyen/adyen-go-api-library/src/adyen"
+	"github.com/adyen/adyen-go-api-library/src/common"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
 
 var (
-	checkoutAPI     *client.CheckoutAPI
-	aclient         *adyenapi.APIClient
+	client          *adyen.APIClient
 	merchantAccount string
 )
 
@@ -22,24 +20,14 @@ func Init() {
 	// Set the router as the default one shipped with Gin
 	router := gin.Default()
 
-	var err error
-	// Init the Adyen checkout API
 	godotenv.Load("./.env")
-	checkoutAPI, err = checkoutAPI.Init(client.ClientConfig{
-		MerchantAccount: os.Getenv("ADYEN_MERCHANT"),
-		APIKey:          os.Getenv("ADYEN_API_KEY"),
+
+	client = adyen.NewClient(&common.Config{
+		ApiKey:      os.Getenv("ADYEN_API_KEY"),
+		Environment: common.TestEnv,
 	})
 
-	config := adyenapi.NewConfiguration()
-	config.AddDefaultHeader("x-API-key", os.Getenv("ADYEN_API_KEY"))
 	merchantAccount = os.Getenv("ADYEN_MERCHANT")
-
-	aclient = adyenapi.NewAPIClient(config)
-
-	if err != nil {
-		fmt.Printf("Error initializing API client: %s", err.Error())
-		os.Exit(1)
-	}
 
 	// Serve frontend static files
 	router.Use(static.Serve("/", static.LocalFile("./static", true)))
